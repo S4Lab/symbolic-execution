@@ -82,6 +82,9 @@ KNOB < int > stackOffset (KNOB_MODE_WRITEONCE,
 KNOB < BOOL > naive (KNOB_MODE_WRITEONCE, "pintool", "naive", "",
     "if presents, just print info about instructions with no instrumentation");
 
+KNOB < BOOL > printStack (KNOB_MODE_WRITEONCE, "pintool", "printstack", "",
+    "if presents, hexdumps the top of stack contents");
+
 KNOB < BOOL > measure (KNOB_MODE_WRITEONCE, "pintool", "measure", "",
     "if presents, trivial instruction counting instrumentation will be used instead of normal behavior");
 
@@ -246,6 +249,7 @@ bool SymbolicExecuter::parseArgumentsAndInitializeTool () {
   if (justAnalyzeMainRoutine) { // this includes  {|| start != end} scenario
     im->setMainArgsReportingFilePath (mainArgsReportingFilePath);
   }
+  im->setPrintStackFlag (printStack.Value ());
   return true;
 }
 

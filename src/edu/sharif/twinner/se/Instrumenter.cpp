@@ -69,6 +69,7 @@ Instrumenter::Instrumenter (const string &_traceFilePath,
     bool _naive,
     bool measureMode) :
     traceFilePath (_traceFilePath), disassemblyFilePath (_disassemblyFilePath),
+    printStack (false),
     ise (new InstructionSymbolicExecuter (this, _disabled, measureMode)),
     isStartInstructionInstrumented (false),
     isEndInstructionInstrumented (false),
@@ -316,6 +317,10 @@ bool Instrumenter::instrumentSafeFunctions (INS ins, UINT32 insAssembly) const {
 
 void Instrumenter::setMainArgsReportingFilePath (const std::string &_marFilePath) {
   marFilePath = _marFilePath;
+}
+
+void Instrumenter::setPrintStackFlag (bool flag) {
+  printStack = flag;
 }
 
 bool Instrumenter::instrumentSingleInstruction (INS ins) {
@@ -1480,6 +1485,36 @@ void Instrumenter::enable () {
   }
 }
 
+void Instrumenter::printHexAscii (ADDRINT memoryEa,
+    char *content, int size) const {
+  std::stringstream ss;
+  ss << '\n';
+  for (int i = 0; i + 16 < size; i += 16) {
+    std::stringstream ssHex;
+    std::stringstream ssAscii;
+    ssHex << std::setw (16) << std::setfill ('0') << std::hex
+        << (memoryEa + i) << ": ";
+    for (int j = i; j < i + 16; ++j) {
+      const char c = content[j];
+      const unsigned int ui = c & 0xFF;
+      ssHex << std::setw (2) << std::setfill ('0') << std::hex << ui << ' ';
+      ssAscii << (isprint (c) ? c : '.');
+    }
+    ss << ssHex.str () << '|' << ssAscii.str () << "|\n";
+  }
+  edu::sharif::twinner::util::Logger::info () << ss.str ();
+}
+
+void Instrumenter::printStack (const ADDRINT stackPointer) {
+  if (!printStack) {
+    return;
+  }
+  char content[1000];
+  const size_t size =
+      PIN_SafeCopy (content, (const VOID *) (stackPointer), sizeof (content));
+  printHexAscii (stackPointer, content, size);
+}
+
 void Instrumenter::beforeSafeFunction (ADDRINT retAddress,
     const edu::sharif::twinner::trace::FunctionInfo &fi, UINT32 insAssembly,
     const CONTEXT *context) {
@@ -1554,7 +1589,12 @@ void Instrumenter::instrumentEndpointInstruction (INS ins, const ADDRINT addr) {
   if (!isStartInstructionInstrumented && addr == start) {
     INS_InsertCall (ins, IPOINT_BEFORE, (AFUNPTR) startAnalysis,
                     IARG_PTR, this,
-                    IARG_END);
+#ifdef TARGET_IA32E
+        IARG_REG_VALUE, REG_RSP,
+#else
+        IARG_REG_VALUE, REG_ESP,
+#endif
+        IARG_END);
     if (shouldSaveMainArgs) {
       INS_InsertCall (ins, IPOINT_BEFORE, (AFUNPTR) reportMainArgs,
                       IARG_PTR, this,
@@ -1594,7 +1634,12 @@ void Instrumenter::instrumentImage (IMG img) {
        */
       RTN_InsertCall (mainRoutine, IPOINT_BEFORE, (AFUNPTR) startAnalysis,
                       IARG_PTR, this,
-                      IARG_END);
+#ifdef TARGET_IA32E
+          IARG_REG_VALUE, REG_RSP,
+#else
+          IARG_REG_VALUE, REG_ESP,
+#endif
+          IARG_END);
       if (shouldSaveMainArgs) {
         RTN_InsertCall (mainRoutine, IPOINT_BEFORE, (AFUNPTR) reportMainArgs,
                         IARG_PTR, this,
@@ -1645,11 +1690,12 @@ VOID afterSafeFunc (VOID *v, CONTEXT *context) {
   im->afterSafeFunction (context);
 }
 
-VOID startAnalysis (VOID *v) {
+VOID startAnalysis (VOID *v, ADDRINT stackPointer) {
   edu::sharif::twinner::util::Logger::loquacious ()
       << "********** startAnalysis(...) **********\n";
   Instrumenter *im = (Instrumenter *) v;
   im->enable ();
+  im->printStack (stackPointer);
 }
 
 VOID reportMainArgs (VOID *v, ADDRINT *arg0, ADDRINT *arg1) {
