@@ -79,6 +79,10 @@ KNOB < int > stackOffset (KNOB_MODE_WRITEONCE,
     "the stack offset (in terms of the number of arguments) for main() args"
     " (in -main and -endpoints modes");
 
+KNOB < string > lookupContent (KNOB_MODE_WRITEONCE,
+    "pintool", "lookup", "",
+    "hex content string to be searched for in the stack");
+
 KNOB < BOOL > naive (KNOB_MODE_WRITEONCE, "pintool", "naive", "",
     "if presents, just print info about instructions with no instrumentation");
 
@@ -249,6 +253,7 @@ bool SymbolicExecuter::parseArgumentsAndInitializeTool () {
   if (justAnalyzeMainRoutine) { // this includes  {|| start != end} scenario
     im->setMainArgsReportingFilePath (mainArgsReportingFilePath);
   }
+  im->setLookupContent (lookupContent.Value ());
   im->setPrintStackFlag (printStack.Value ());
   return true;
 }

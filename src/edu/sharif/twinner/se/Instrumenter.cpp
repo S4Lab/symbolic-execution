@@ -319,6 +319,10 @@ void Instrumenter::setMainArgsReportingFilePath (const std::string &_marFilePath
   marFilePath = _marFilePath;
 }
 
+void Instrumenter::setLookupContent (const std::string &content) {
+  lookupContent = content;
+}
+
 void Instrumenter::setPrintStackFlag (bool flag) {
   printStack = flag;
 }
@@ -1505,14 +1509,35 @@ void Instrumenter::printHexAscii (ADDRINT memoryEa,
   edu::sharif::twinner::util::Logger::info () << ss.str ();
 }
 
-void Instrumenter::printStack (const ADDRINT stackPointer) {
-  if (!printStack) {
+void Instrumenter::lookupForAskedContent (const ADDRINT stackPointer) {
+  if (lookupContent.size () == 0 && !printStack) {
     return;
   }
   char content[1000];
   const size_t size =
       PIN_SafeCopy (content, (const VOID *) (stackPointer), sizeof (content));
-  printHexAscii (stackPointer, content, size);
+  if (printStack) {
+    printHexAscii (stackPointer, content, size);
+  }
+  if (lookupContent.size () == 0) {
+    return;
+  }
+  std::ostringstream ss;
+  for (unsigned int i = 0; i < size; ++i) {
+    const char c = content[i];
+    const unsigned int ui = c & 0xFF;
+    ss << std::setw (2) << std::setfill ('0') << std::hex << ui;
+  }
+  std::string str = ss.str ();
+  for (std::string::size_type pos = str.find (lookupContent);
+      pos != std::string::npos;
+      pos = str.find (lookupContent, pos + 2)) {
+    const ADDRINT startAddress = stackPointer + pos / 2;
+    const ADDRINT endAddress = startAddress + lookupContent.size () / 2;
+    edu::sharif::twinner::util::Logger::info ()
+        << "Content found at: "
+        "0x" << std::hex << startAddress << ", 0x" << endAddress << '\n';
+  }
 }
 
 void Instrumenter::beforeSafeFunction (ADDRINT retAddress,
@@ -1695,7 +1720,7 @@ VOID startAnalysis (VOID *v, ADDRINT stackPointer) {
       << "********** startAnalysis(...) **********\n";
   Instrumenter *im = (Instrumenter *) v;
   im->enable ();
-  im->printStack (stackPointer);
+  im->lookupForAskedContent (stackPointer);
 }
 
 VOID reportMainArgs (VOID *v, ADDRINT *arg0, ADDRINT *arg1) {

@@ -171,6 +171,7 @@ private:
   std::string disassemblyFilePath; // save disassembled instructions into this file
   std::string marFilePath; // save final main() args report into this file
   std::string marCache;
+  std::string lookupContent;
 
   bool printStack;
 
@@ -205,6 +206,7 @@ public:
   void registerInstrumentationRoutines ();
 
   void setMainArgsReportingFilePath (const std::string &marFilePath);
+  void setLookupContent (const std::string &content);
   void setPrintStackFlag (bool flag);
   void instrumentImage (IMG img);
   void instrumentSafeFunctions (IMG img);
@@ -219,7 +221,7 @@ public:
   void disable ();
   void enable ();
 
-  void printStack (ADDRINT stackPointer);
+  void lookupForAskedContent (ADDRINT stackPointer);
 
   void beforeSafeFunction (ADDRINT retAddress,
       const edu::sharif::twinner::trace::FunctionInfo &fi,
