@@ -2,6 +2,8 @@ fullpreparation=$1
 
 echo "Linking to source files from deploy folder..."
 cp -f -l -a -u run_se.sh src/* "deploy/"
+cp -f -l -a -u -r evalscripts "deploy/"
+cp -f -a -u -r "test/evaluation" "deploy/obj-intel64/"
 
 if [ "a$fullpreparation" = "afull" ]; then
 	echo "Full preparation..."
@@ -21,6 +23,8 @@ if [ "a$fullpreparation" = "afull" ]; then
 		sudo -k
 	fi
 	sudo su sandbox -c 'mkdir -p deploy/tmp/se'
+	sudo chgrp sandbox 'deploy/obj-intel64/evaluation'
+	chmod 775 'deploy/obj-intel64/evaluation'
 	export LD_LIBRARY_PATH=/home/john/twinner/pin-2.14-linux/intel64/runtime
 fi
 echo "Done."
