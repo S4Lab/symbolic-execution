@@ -65,6 +65,10 @@ KNOB < BOOL > main (KNOB_MODE_WRITEONCE, "pintool", "main", "",
 KNOB < string > endpoints (KNOB_MODE_WRITEONCE, "pintool", "endpoints", "",
     "comma separated instruction addresses to start/end analysis");
 
+KNOB < string > taintIntervals (KNOB_MODE_WRITEONCE,
+    "pintool", "taint", "",
+    "comma separated memory addresses of [start,end)* intervals to be tainted");
+
 KNOB < string > safeFunctions (KNOB_MODE_WRITEONCE, "pintool",
     "safe-functions", "",
     "comma separated functions to be preserved");
@@ -196,6 +200,38 @@ bool SymbolicExecuter::parseArgumentsAndInitializeTool () {
         << "Analysis endpoints are specified:"
         " 0x" << std::hex << start << " - 0x" << end << '\n';
   }
+  string taintIntervalsStr = taintIntervals.Value ();
+  std::set< std::pair<ADDRINT, ADDRINT> > taintIntervalsSet;
+  if (taintIntervalsStr != "") {
+    for (std::string::size_type pos = 0;
+        pos < taintIntervalsStr.size ();
+        ++pos) {
+      const std::string::size_type separator = taintIntervalsStr.find (",", pos);
+      if (separator == std::string::npos) {
+        edu::sharif::twinner::util::Logger::error ()
+            << "Taint intervals are not well formed.\n";
+        return false;
+      }
+      ADDRINT taintStart = 0, taintEnd = 0;
+      std::stringstream startStr (taintIntervalsStr.substr (pos, separator));
+      startStr >> std::hex >> taintStart;
+      pos = taintIntervalsStr.find (",", separator + 1);
+      std::stringstream endStr (taintIntervalsStr.substr (separator + 1, pos));
+      endStr >> std::hex >> taintEnd;
+      taintIntervalsSet.insert (make_pair (taintStart, taintEnd));
+      if (pos == std::string::npos) {
+        break;
+      }
+    }
+    std::stringstream ss;
+    ss << "Taint intervals are specified:\n";
+    for (std::set< std::pair<ADDRINT, ADDRINT> >::iterator it =
+        taintIntervalsSet.begin ();
+        it != taintIntervalsSet.end (); ++it) {
+      ss << "\t0x" << std::hex << it->first << " - 0x" << it->second << '\n';
+    }
+    edu::sharif::twinner::util::Logger::info () << ss.str ();
+  }
   string safeFunctionsStr = safeFunctions.Value ();
   vector<edu::sharif::twinner::trace::FunctionInfo> safeFunctionsInfo;
   if (safeFunctionsStr != "") {
@@ -254,6 +290,7 @@ bool SymbolicExecuter::parseArgumentsAndInitializeTool () {
     im->setMainArgsReportingFilePath (mainArgsReportingFilePath);
   }
   im->setLookupContent (lookupContent.Value ());
+  im->setTaintIntervalsSet (taintIntervalsSet);
   im->setPrintStackFlag (printStack.Value ());
   return true;
 }

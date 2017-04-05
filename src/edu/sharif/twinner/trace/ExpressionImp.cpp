@@ -27,6 +27,8 @@ namespace sharif {
 namespace twinner {
 namespace trace {
 
+std::set< std::pair<ADDRINT, ADDRINT> > ExpressionImp::taintIntervals;
+
 ExpressionImp::ExpressionImp (const ExpressionImp &exp) :
     Expression (exp) {
 }
@@ -88,10 +90,10 @@ ExpressionImp::ExpressionImp (ADDRINT memoryEa,
     int generationIndex, bool isOverwriting, int snapshotIndex) :
     Expression (concreteValue.clone (), isOverwriting) {
   if (!isOverwriting) {
-    // if (memoryEa is not tainted) {
-    stack.push_back (new edu::sharif::twinner::trace::exptoken::Constant (concreteValue));
-    return;
-    // }
+    if (!isAddressTainted (memoryEa)) {
+      stack.push_back (new edu::sharif::twinner::trace::exptoken::Constant (concreteValue));
+      return;
+    }
   }
   if (concreteValue.getSize () == 128) {
     const edu::sharif::twinner::trace::cv::ConcreteValue128Bits *cv =
@@ -136,6 +138,22 @@ ExpressionImp::ExpressionImp (UINT64 value) :
     Expression (new edu::sharif::twinner::trace::cv::ConcreteValue64Bits (value), false) {
   stack.push_back (new edu::sharif::twinner::trace::exptoken::Constant
                    (new edu::sharif::twinner::trace::cv::ConcreteValue64Bits (value)));
+}
+
+void ExpressionImp::setTaintIntervals (
+    std::set< std::pair<ADDRINT, ADDRINT> > _taintIntervals) {
+  ExpressionImp::taintIntervals = _taintIntervals;
+}
+
+bool ExpressionImp::isAddressTainted (ADDRINT memoryEa) {
+  for (std::set< std::pair<ADDRINT, ADDRINT> >::iterator it =
+      ExpressionImp::taintIntervals.begin ();
+      it != ExpressionImp::taintIntervals.end (); ++it) {
+    if (it->first <= memoryEa && memoryEa < it->second) {
+      return true;
+    }
+  }
+  return false;
 }
 
 ExpressionImp *ExpressionImp::clone () const {

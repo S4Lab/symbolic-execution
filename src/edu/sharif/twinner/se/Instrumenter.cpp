@@ -21,7 +21,7 @@
 #include "InstructionSymbolicExecuter.h"
 
 #include "edu/sharif/twinner/trace/MarInfo.h"
-
+#include "edu/sharif/twinner/trace/ExpressionImp.h"
 #include "edu/sharif/twinner/trace/Trace.h"
 #include "edu/sharif/twinner/trace/syscall/Syscall.h"
 #include "edu/sharif/twinner/trace-twintool/FunctionInfo.h"
@@ -1507,6 +1507,11 @@ void Instrumenter::printHexAscii (ADDRINT memoryEa,
     ss << ssHex.str () << '|' << ssAscii.str () << "|\n";
   }
   edu::sharif::twinner::util::Logger::info () << ss.str ();
+}
+
+void Instrumenter::setTaintIntervalsSet (
+    std::set< std::pair<ADDRINT, ADDRINT> > taintIntervals) {
+  edu::sharif::twinner::trace::ExpressionImp::setTaintIntervals (taintIntervals);
 }
 
 void Instrumenter::lookupForAskedContent (const ADDRINT stackPointer) {

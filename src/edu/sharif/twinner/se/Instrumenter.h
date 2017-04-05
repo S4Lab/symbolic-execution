@@ -221,6 +221,8 @@ public:
   void disable ();
   void enable ();
 
+  void setTaintIntervalsSet (
+      std::set< std::pair<ADDRINT, ADDRINT> > taintIntervals);
   void lookupForAskedContent (ADDRINT stackPointer);
 
   void beforeSafeFunction (ADDRINT retAddress,

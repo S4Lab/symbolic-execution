@@ -15,6 +15,9 @@
 
 #include "Expression.h"
 
+#include <set>
+#include <utility>
+
 namespace edu {
 namespace sharif {
 namespace twinner {
@@ -30,6 +33,8 @@ class ConcreteValue64Bits;
 
 class ExpressionImp : public Expression {
 private:
+  static std::set< std::pair<ADDRINT, ADDRINT> > taintIntervals;
+
   ExpressionImp (const ExpressionImp &exp);
 
 public:
@@ -81,7 +86,12 @@ public:
 
   virtual ExpressionImp *clone () const;
 
+  static void setTaintIntervals (
+      std::set< std::pair<ADDRINT, ADDRINT> > taintIntervals);
+
 private:
+  static bool isAddressTainted (ADDRINT memoryEa);
+
   edu::sharif::twinner::trace::exptoken::ExpressionToken *
   instantiateMemorySymbol (ADDRINT memoryEa,
       const edu::sharif::twinner::trace::cv::ConcreteValue &concreteValue,
