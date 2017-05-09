@@ -1,0 +1,5 @@
+setboard 1k1q3r/r4p2/b6p/1pQ1R1p1/pP1nB3/P6P/5PP1/4R1K1 w
+d
+sd 4
+go
+quit

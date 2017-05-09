@@ -204,6 +204,7 @@ void Instrumenter::initialize () {
               XED_ICLASS_MOVQ);
   INITIALIZE (MOV_INS_WITH_LARGE_REG_INS_MODELS,
               XED_ICLASS_MOVSD_XMM,
+              XED_ICLASS_MOVSS,
               XED_ICLASS_MOVAPS, XED_ICLASS_MOVDQU, XED_ICLASS_MOVDQA);
   managedInstructions.insert
       (make_pair (XED_ICLASS_LDDQU, DST_LARGE_REG_SRC_MEM));
@@ -435,6 +436,7 @@ Instrumenter::InstructionModel Instrumenter::getInstructionModel (OPCODE op,
   case XED_ICLASS_DEC:
   case XED_ICLASS_NEG:
   case XED_ICLASS_SETO:
+  case XED_ICLASS_SETP:
   case XED_ICLASS_SETNP:
   case XED_ICLASS_SETNS:
   case XED_ICLASS_SETNZ:
@@ -1518,7 +1520,7 @@ void Instrumenter::lookupForAskedContent (const ADDRINT stackPointer) {
   if (lookupContent.size () == 0 && !printStack) {
     return;
   }
-  char content[1000];
+  char content[5000];
   const size_t size =
       PIN_SafeCopy (content, (const VOID *) (stackPointer), sizeof (content));
   if (printStack) {
@@ -1721,7 +1723,7 @@ VOID afterSafeFunc (VOID *v, CONTEXT *context) {
 }
 
 VOID startAnalysis (VOID *v, ADDRINT stackPointer) {
-  edu::sharif::twinner::util::Logger::loquacious ()
+  edu::sharif::twinner::util::Logger::info ()
       << "********** startAnalysis(...) **********\n";
   Instrumenter *im = (Instrumenter *) v;
   im->enable ();
@@ -1729,7 +1731,7 @@ VOID startAnalysis (VOID *v, ADDRINT stackPointer) {
 }
 
 VOID reportMainArgs (VOID *v, ADDRINT *arg0, ADDRINT *arg1) {
-  edu::sharif::twinner::util::Logger::loquacious ()
+  edu::sharif::twinner::util::Logger::info ()
       << "reportMainArgs (...) function is called\n";
   Instrumenter *im = (Instrumenter *) v;
   int argc = *reinterpret_cast<int *> (arg0);
@@ -1759,14 +1761,14 @@ VOID applicationIsAboutToExit (INT32 code, VOID * v) {
     return;
   }
   called = true;
-  edu::sharif::twinner::util::Logger::loquacious ()
+  edu::sharif::twinner::util::Logger::info ()
       << "********** applicationIsAboutToExit(...) **********\n";
   Instrumenter *im = (Instrumenter *) v;
   im->aboutToExit (code);
 }
 
 VOID terminateAnalysis (VOID *imptr) {
-  edu::sharif::twinner::util::Logger::loquacious ()
+  edu::sharif::twinner::util::Logger::info ()
       << "********** terminateAnalysis(...) **********\n";
   Instrumenter *im = (Instrumenter *) imptr;
   im->disable ();

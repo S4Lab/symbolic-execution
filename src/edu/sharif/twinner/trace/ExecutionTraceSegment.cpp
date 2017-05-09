@@ -335,6 +335,11 @@ void ExecutionTraceSegment::addTemporaryExpressions (
 }
 
 void ExecutionTraceSegment::addNewSnapshot (Snapshot *snapshot) {
+  // old snapshots can be stored at this line
+  while (!snapshots.empty ()) {
+    delete snapshots.front ();
+    snapshots.pop_front ();
+  }
   snapshots.push_back (snapshot);
   snapshot->setTimedTrace (timedTrace);
 }

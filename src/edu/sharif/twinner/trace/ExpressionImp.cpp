@@ -92,6 +92,8 @@ ExpressionImp::ExpressionImp (ADDRINT memoryEa,
   if (!isOverwriting) {
     if (!isAddressTainted (memoryEa)) {
       stack.push_back (new edu::sharif::twinner::trace::exptoken::Constant (concreteValue));
+      edu::sharif::twinner::util::Logger::debug ()
+          << "Instantiated Constant: " << toDetailedString () << '\n';
       return;
     }
   }
@@ -116,6 +118,8 @@ ExpressionImp::ExpressionImp (ADDRINT memoryEa,
                      (memoryEa, concreteValue, generationIndex, isOverwriting,
                       snapshotIndex));
   }
+  edu::sharif::twinner::util::Logger::debug ()
+      << "Instantiated Symbol: " << toDetailedString () << '\n';
 }
 
 ExpressionImp::ExpressionImp (edu::sharif::twinner::trace::exptoken::Symbol *symbol) :
@@ -146,9 +150,12 @@ void ExpressionImp::setTaintIntervals (
 }
 
 bool ExpressionImp::isAddressTainted (ADDRINT memoryEa) {
+  edu::sharif::twinner::util::Logger::debug () << " === 0x" << std::hex << memoryEa << '\n';
   for (std::set< std::pair<ADDRINT, ADDRINT> >::iterator it =
       ExpressionImp::taintIntervals.begin ();
       it != ExpressionImp::taintIntervals.end (); ++it) {
+    edu::sharif::twinner::util::Logger::debug () << " --- 0x" << std::hex << it->first
+        << ", 0x" << it->second << '\n';
     if (it->first <= memoryEa && memoryEa < it->second) {
       return true;
     }

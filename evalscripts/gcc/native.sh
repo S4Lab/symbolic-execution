@@ -7,5 +7,5 @@ rm -f "${outfile}"
 # the gcc internally calls cc1 which is the actual compiler
 # the gcc acts as a wrapper here
 # the following command is extracted from a gcc run using strace
-progexec="/usr/lib/gcc/x86_64-linux-gnu/4.8/cc1 -fpreprocessed $srcfile -quiet -dumpbase ${basename}.i -mtune=generic -march=x86-64 -auxbase ${basename} -fstack-protector -Wformat -Wformat-security -o ${outfile}"
+progexec="/usr/lib/gcc/x86_64-linux-gnu/4.8/cc1 -fpreprocessed $srcfile -quiet -dumpbase ${basename}.i -mtune=generic -march=x86-64 -auxbase ${basename} -fstack-protector -Wformat -Wformat-security -O0 -o ${outfile}"
 $progexec

@@ -585,9 +585,14 @@ private:
   void joAnalysisRoutine (bool branchTaken);
 
   /**
-   * JP jumps if PF=1 which means that corresponding expression was < 0
+   * JP jumps if PF=1 (even parity)
    */
   void jpAnalysisRoutine (bool branchTaken);
+
+  /**
+   * JNP jumps if PF=0 (odd parity)
+   */
+  void jnpAnalysisRoutine (bool branchTaken);
 
   /**
    * JS jumps if SF=1 which means that corresponding expression was < 0
@@ -936,6 +941,12 @@ private:
    * SETO sets opr to 1 iff OF=1 (and sets it to 0 otherwise).
    */
   void setoAnalysisRoutine (
+      const edu::sharif::twinner::proxy::MutableExpressionValueProxy &opr);
+
+  /**
+   * SETP sets opr to 1 iff PF=1 (and sets it to 0 otherwise).
+   */
+  void setpAnalysisRoutine (
       const edu::sharif::twinner::proxy::MutableExpressionValueProxy &opr);
 
   /**

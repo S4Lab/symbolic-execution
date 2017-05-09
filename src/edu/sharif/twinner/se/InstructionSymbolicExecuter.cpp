@@ -26,6 +26,7 @@
 #include "edu/sharif/twinner/operationgroup/BitwiseAndOperationGroup.h"
 #include "edu/sharif/twinner/operationgroup/ShiftArithmeticRightOperationGroup.h"
 #include "edu/sharif/twinner/operationgroup/ShiftRightOperationGroup.h"
+#include "edu/sharif/twinner/operationgroup/ShiftLeftOperationGroup.h"
 
 #include "edu/sharif/twinner/trace/ExpressionImp.h"
 #include "edu/sharif/twinner/trace/Constraint.h"
@@ -1030,7 +1031,7 @@ void InstructionSymbolicExecuter::setExpression (
   delete exp;
   if (state.isWrongState ()) {
     edu::sharif::twinner::util::Logger::error () << state.getMessage () << '\n';
-    abort ();
+    return; // abort ();
   }
 }
 
@@ -1337,7 +1338,7 @@ void InstructionSymbolicExecuter::shldAnalysisRoutine (
   delete dstexpOrig;
   delete shiftexp;
   eflags.setFlags (new edu::sharif::twinner::operationgroup::DummyOperationGroup
-                   ("ShiftLeftOperationGroup"));
+                   ("ShiftDoubleLeftOperationGroup"));
   edu::sharif::twinner::util::Logger::loquacious () << "\tdone\n";
 }
 
@@ -1766,7 +1767,7 @@ void InstructionSymbolicExecuter::jnzAnalysisRoutine (bool branchTaken) {
         << "InstructionSymbolicExecuter::jnzAnalysisRoutine"
         " (branchTaken=" << branchTaken << "):"
         " JNZ branching and last known EFLAGS state do not match\n";
-    abort ();
+    return; // abort ();
   }
   edu::sharif::twinner::util::Logger::loquacious () << "\tadding constraint...";
   trace->addPathConstraints (cc);
@@ -1785,7 +1786,7 @@ void InstructionSymbolicExecuter::jzAnalysisRoutine (bool branchTaken) {
         << "InstructionSymbolicExecuter::jzAnalysisRoutine"
         " (branchTaken=" << branchTaken << "):"
         " JZ branching and last known EFLAGS state do not match\n";
-    abort ();
+    return; // abort ();
   }
   edu::sharif::twinner::util::Logger::loquacious () << "\tadding constraint...";
   trace->addPathConstraints (cc);
@@ -1805,7 +1806,7 @@ void InstructionSymbolicExecuter::jleAnalysisRoutine (bool branchTaken) {
         << "InstructionSymbolicExecuter::jleAnalysisRoutine"
         " (branchTaken=" << branchTaken << "):"
         " JLE branching and last known EFLAGS state do not match\n";
-    abort ();
+    return; // abort ();
   }
   edu::sharif::twinner::util::Logger::loquacious () << "\tadding constraint...";
   trace->addPathConstraints (cc);
@@ -1825,7 +1826,7 @@ void InstructionSymbolicExecuter::jnleAnalysisRoutine (bool branchTaken) {
         << "InstructionSymbolicExecuter::jnleAnalysisRoutine"
         " (branchTaken=" << branchTaken << "):"
         " JNLE branching and last known EFLAGS state do not match\n";
-    abort ();
+    return; // abort ();
   }
   edu::sharif::twinner::util::Logger::loquacious () << "\tadding constraint...";
   trace->addPathConstraints (cc);
@@ -1844,7 +1845,7 @@ void InstructionSymbolicExecuter::jlAnalysisRoutine (bool branchTaken) {
         << "InstructionSymbolicExecuter::jlAnalysisRoutine"
         " (branchTaken=" << branchTaken << "):"
         " JL branching and last known EFLAGS state do not match\n";
-    abort ();
+    return; // abort ();
   }
   edu::sharif::twinner::util::Logger::loquacious () << "\tadding constraint...";
   trace->addPathConstraints (cc);
@@ -1863,7 +1864,7 @@ void InstructionSymbolicExecuter::jnlAnalysisRoutine (bool branchTaken) {
         << "InstructionSymbolicExecuter::jnlAnalysisRoutine"
         " (branchTaken=" << branchTaken << "):"
         " JNL branching and last known EFLAGS state do not match\n";
-    abort ();
+    return; // abort ();
   }
   edu::sharif::twinner::util::Logger::loquacious () << "\tadding constraint...";
   trace->addPathConstraints (cc);
@@ -1883,7 +1884,7 @@ void InstructionSymbolicExecuter::jbeAnalysisRoutine (bool branchTaken) {
         << "InstructionSymbolicExecuter::jbeAnalysisRoutine"
         " (branchTaken=" << branchTaken << "):"
         " JBE branching and last known EFLAGS state do not match\n";
-    abort ();
+    return; // abort ();
   }
   edu::sharif::twinner::util::Logger::loquacious () << "\tadding constraint...";
   trace->addPathConstraints (cc);
@@ -1903,7 +1904,7 @@ void InstructionSymbolicExecuter::jnbeAnalysisRoutine (bool branchTaken) {
         << "InstructionSymbolicExecuter::jnbeAnalysisRoutine"
         " (branchTaken=" << branchTaken << "):"
         " JNBE branching and last known EFLAGS state do not match\n";
-    abort ();
+    return; // abort ();
   }
   edu::sharif::twinner::util::Logger::loquacious () << "\tadding constraint...";
   trace->addPathConstraints (cc);
@@ -1922,7 +1923,7 @@ void InstructionSymbolicExecuter::jnbAnalysisRoutine (bool branchTaken) {
         << "InstructionSymbolicExecuter::jnbAnalysisRoutine"
         " (branchTaken=" << branchTaken << "):"
         " JNB branching and last known EFLAGS state do not match\n";
-    abort ();
+    return; // abort ();
   }
   edu::sharif::twinner::util::Logger::loquacious () << "\tadding constraint...";
   trace->addPathConstraints (cc);
@@ -1941,7 +1942,7 @@ void InstructionSymbolicExecuter::jbAnalysisRoutine (bool branchTaken) {
         << "InstructionSymbolicExecuter::jbAnalysisRoutine"
         " (branchTaken=" << branchTaken << "):"
         " JB branching and last known EFLAGS state do not match\n";
-    abort ();
+    return; // abort ();
   }
   edu::sharif::twinner::util::Logger::loquacious () << "\tadding constraint...";
   trace->addPathConstraints (cc);
@@ -1960,7 +1961,7 @@ void InstructionSymbolicExecuter::joAnalysisRoutine (bool branchTaken) {
         << "InstructionSymbolicExecuter::joAnalysisRoutine"
         " (branchTaken=" << branchTaken << "):"
         "JO branching and last known EFLAGS state do not match\n";
-    abort ();
+    return; // abort ();
   }
   edu::sharif::twinner::util::Logger::loquacious () << "\tadding constraint...";
   trace->addPathConstraints (cc);
@@ -1979,7 +1980,26 @@ void InstructionSymbolicExecuter::jpAnalysisRoutine (bool branchTaken) {
         << "InstructionSymbolicExecuter::jpAnalysisRoutine"
         " (branchTaken=" << branchTaken << "):"
         "JP branching and last known EFLAGS state do not match\n";
-    abort ();
+    return; // abort ();
+  }
+  edu::sharif::twinner::util::Logger::loquacious () << "\tadding constraint...";
+  trace->addPathConstraints (cc);
+  edu::sharif::twinner::util::Logger::loquacious () << "\tdone\n";
+}
+
+void InstructionSymbolicExecuter::jnpAnalysisRoutine (bool branchTaken) {
+  edu::sharif::twinner::trace::Trace *trace = getTrace ();
+  edu::sharif::twinner::util::Logger::loquacious () << "jnpAnalysisRoutine(...)\n"
+      << "\tinstantiating constraint...";
+  bool parity;
+  std::list <edu::sharif::twinner::trace::Constraint *> cc =
+      eflags.instantiateConstraintForParityCase (parity, disassembledInstruction);
+  if (parity == branchTaken) {
+    edu::sharif::twinner::util::Logger::error ()
+        << "InstructionSymbolicExecuter::jnpAnalysisRoutine"
+        " (branchTaken=" << branchTaken << "):"
+        "JNP branching and last known EFLAGS state do not match\n";
+    return; // abort ();
   }
   edu::sharif::twinner::util::Logger::loquacious () << "\tadding constraint...";
   trace->addPathConstraints (cc);
@@ -1998,7 +2018,7 @@ void InstructionSymbolicExecuter::jsAnalysisRoutine (bool branchTaken) {
         << "InstructionSymbolicExecuter::jsAnalysisRoutine"
         " (branchTaken=" << branchTaken << "):"
         "JS branching and last known EFLAGS state do not match\n";
-    abort ();
+    return; // abort ();
   }
   edu::sharif::twinner::util::Logger::loquacious () << "\tadding constraint...";
   trace->addPathConstraints (cc);
@@ -2017,7 +2037,7 @@ void InstructionSymbolicExecuter::jnsAnalysisRoutine (bool branchTaken) {
         << "InstructionSymbolicExecuter::jnsAnalysisRoutine"
         " (branchTaken=" << branchTaken << "):"
         " JNS branching and last known EFLAGS state do not match\n";
-    abort ();
+    return; // abort ();
   }
   edu::sharif::twinner::util::Logger::loquacious () << "\tadding constraint...";
   trace->addPathConstraints (cc);
@@ -2112,7 +2132,7 @@ void InstructionSymbolicExecuter::retAnalysisRoutine (const CONTEXT *context,
             "ret instruction must pop either "
             << STACK_OPERATION_UNIT_SIZE << " or "
             << (2 * STACK_OPERATION_UNIT_SIZE) << " bytes\n";
-        abort ();
+        return; // abort ();
       }
       rsp->add (cv);
       // TODO: call valueIsChanged from an expression proxy to address ESP, SP, and SPL
@@ -2154,7 +2174,7 @@ void InstructionSymbolicExecuter::retWithArgAnalysisRoutine (
             "ret instruction must pop either "
             << (STACK_OPERATION_UNIT_SIZE + offset) << " or "
             << (2 * STACK_OPERATION_UNIT_SIZE + offset) << " bytes\n";
-        abort ();
+        return; // abort ();
       }
       rsp->add (cv);
       // TODO: call valueIsChanged from an expression proxy to address ESP, SP, and SPL
@@ -2198,7 +2218,7 @@ void InstructionSymbolicExecuter::jmpAnalysisRoutine (const CONTEXT *context,
           << "InstructionSymbolicExecuter::jmpAnalysisRoutine (...):"
           " jmp instruction must not have any side effect"
           " (it changed the RSP)\n";
-      abort ();
+      return; // abort ();
     }
   }
   edu::sharif::twinner::util::Logger::loquacious () << "\tdone\n";
@@ -2219,7 +2239,7 @@ void InstructionSymbolicExecuter::repAnalysisRoutine (
     edu::sharif::twinner::util::Logger::error ()
         << "InstructionSymbolicExecuter::repAnalysisRoutine (...): "
         "REP count and executing state do not match\n";
-    abort ();
+    return; // abort ();
   }
   edu::sharif::twinner::util::Logger::loquacious () << "\tadding constraint...";
   if (executing) {
@@ -2241,7 +2261,7 @@ void InstructionSymbolicExecuter::pslldqAnalysisRoutine (
   edu::sharif::twinner::util::Logger::loquacious ()
       << "pslldqAnalysisRoutine(...)\n"
       << "\tgetting src exp...";
-  const edu::sharif::twinner::trace::Expression *srcexp =
+  edu::sharif::twinner::trace::Expression *srcexp =
       getExpression (src, trace);
   edu::sharif::twinner::util::Logger::loquacious () << "\tgetting dst exp...";
   const edu::sharif::twinner::trace::Expression *dstexpOrig =
@@ -2253,17 +2273,16 @@ void InstructionSymbolicExecuter::pslldqAnalysisRoutine (
         << "\tthe PSLLDQ src is not an immediate value!";
     abort ();
   }
+  srcexp->multiply (8); // convert byte to bits
   edu::sharif::twinner::trace::cv::ConcreteValue *cv =
       srcexp->getLastConcreteValue ().clone ();
-  (*cv) *= 8; // convert byte to bits
   dstexp->shiftToLeft (cv);
   // truncate bits which are shifted left, outside of dst boundaries
   dst.truncate (dstexp);
   setExpression (dst, trace, dstexp);
-  delete dstexpOrig;
-  delete srcexp;
-  eflags.setFlags (new edu::sharif::twinner::operationgroup::DummyOperationGroup
-                   ("ShiftLeftOperationGroup"));
+  eflags.setFlags
+      (new edu::sharif::twinner::operationgroup::ShiftLeftOperationGroup
+       (dstexpOrig, srcexp));
   edu::sharif::twinner::util::Logger::loquacious () << "\tdone\n";
 }
 
@@ -2293,10 +2312,9 @@ void InstructionSymbolicExecuter::shlAnalysisRoutine (
   // truncate bits which are shifted left, outside of dst boundaries
   dst.truncate (dstexp);
   setExpression (dst, trace, dstexp);
-  delete dstexpOrig;
-  delete srcexp;
-  eflags.setFlags (new edu::sharif::twinner::operationgroup::DummyOperationGroup
-                   ("ShiftLeftOperationGroup"));
+  eflags.setFlags
+      (new edu::sharif::twinner::operationgroup::ShiftLeftOperationGroup
+       (dstexpOrig, srcexp));
   edu::sharif::twinner::util::Logger::loquacious () << "\tdone\n";
 }
 
@@ -3384,6 +3402,27 @@ void InstructionSymbolicExecuter::setoAnalysisRoutine (
   edu::sharif::twinner::util::Logger::loquacious () << "\tdone\n";
 }
 
+void InstructionSymbolicExecuter::setpAnalysisRoutine (
+    const edu::sharif::twinner::proxy::MutableExpressionValueProxy &opr) {
+  edu::sharif::twinner::trace::Trace *trace = getTrace ();
+  edu::sharif::twinner::util::Logger::loquacious () << "setpAnalysisRoutine(...)\n"
+      << "\tinstantiating constraint...";
+  bool parity;
+  std::list <edu::sharif::twinner::trace::Constraint *> cc =
+      eflags.instantiateConstraintForParityCase (parity, disassembledInstruction);
+  edu::sharif::twinner::util::Logger::loquacious () << "\tadding constraint...";
+  trace->addPathConstraints (cc);
+  edu::sharif::twinner::util::Logger::loquacious () << "\tsetting dst exp...";
+  edu::sharif::twinner::trace::Expression *dstexp;
+  if (parity) {
+    dstexp = new edu::sharif::twinner::trace::ExpressionImp (UINT64 (1));
+  } else { // shouldSetToZero
+    dstexp = new edu::sharif::twinner::trace::ExpressionImp (UINT64 (0));
+  }
+  setExpression (opr, trace, dstexp);
+  edu::sharif::twinner::util::Logger::loquacious () << "\tdone\n";
+}
+
 void InstructionSymbolicExecuter::setnpAnalysisRoutine (
     const edu::sharif::twinner::proxy::MutableExpressionValueProxy &opr) {
   edu::sharif::twinner::trace::Trace *trace = getTrace ();
@@ -3667,6 +3706,7 @@ InstructionSymbolicExecuter::convertOpcodeToAnalysisRoutine (OPCODE op) const {
   case XED_ICLASS_MOVDQU:
   case XED_ICLASS_MOVDQA:
   case XED_ICLASS_MOVSD_XMM:
+  case XED_ICLASS_MOVSS:
     return &InstructionSymbolicExecuter::movAnalysisRoutine;
   case XED_ICLASS_MOVLPD:
     return &InstructionSymbolicExecuter::movlpdAnalysisRoutine;
@@ -3882,6 +3922,8 @@ InstructionSymbolicExecuter::convertOpcodeToConditionalBranchAnalysisRoutine (
     return &InstructionSymbolicExecuter::joAnalysisRoutine;
   case XED_ICLASS_JP:
     return &InstructionSymbolicExecuter::jpAnalysisRoutine;
+  case XED_ICLASS_JNP:
+    return &InstructionSymbolicExecuter::jnpAnalysisRoutine;
   case XED_ICLASS_JS:
     return &InstructionSymbolicExecuter::jsAnalysisRoutine;
   case XED_ICLASS_JNS:
@@ -3956,6 +3998,8 @@ InstructionSymbolicExecuter::convertOpcodeToSingleOperandAnalysisRoutine (
     return &InstructionSymbolicExecuter::negAnalysisRoutine;
   case XED_ICLASS_SETO:
     return &InstructionSymbolicExecuter::setoAnalysisRoutine;
+  case XED_ICLASS_SETP:
+    return &InstructionSymbolicExecuter::setpAnalysisRoutine;
   case XED_ICLASS_SETNP:
     return &InstructionSymbolicExecuter::setnpAnalysisRoutine;
   case XED_ICLASS_SETNS:
