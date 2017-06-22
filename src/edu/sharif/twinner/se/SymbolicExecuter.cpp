@@ -66,8 +66,8 @@ KNOB < string > endpoints (KNOB_MODE_WRITEONCE, "pintool", "endpoints", "",
     "comma separated instruction addresses to start/end analysis");
 
 KNOB < string > taintIntervals (KNOB_MODE_WRITEONCE,
-    "pintool", "taint", "",
-    "comma separated memory addresses of [start,end)* intervals to be tainted");
+    "pintool", "symbols", "",
+    "comma separated memory addresses of [start,end)* intervals of symbols");
 
 KNOB < string > safeFunctions (KNOB_MODE_WRITEONCE, "pintool",
     "safe-functions", "",
