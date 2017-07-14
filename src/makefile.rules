@@ -84,6 +84,8 @@ SE_OBJ := $(patsubst %.cpp,$(OBJDIR)%$(OBJ_SUFFIX), $(SE_SRC))
 SE_SUB_TRACE_OBJ := $(call MY_FILTER,/trace/,$(SE_OBJ)) $(call MY_FILTER,/util/,$(SE_OBJ))
 SE_SUB_CONCOLIC_OBJ := $(call MY_FILTER,/trace-twintool/,$(SE_OBJ)) $(call MY_FILTER,/operationgroup/,$(SE_OBJ)) $(call MY_FILTER,/proxy/,$(SE_OBJ))
 SE_SUB_SE_OBJ := $(call MY_FILTER,/se/,$(SE_OBJ))
+SE_SUB_SE_BASE_OBJ := $(call MY_FILTER,/se.base/,$(SE_OBJ))
+SE_SUB_SE_GIL_OBJ := $(call MY_FILTER,/se.gil/,$(SE_OBJ))
 SE_DEP := $(SE_OBJ:$(OBJ_SUFFIX)=.d)
 
 
@@ -104,7 +106,17 @@ $(OBJDIR)Concolic$(LIB_SUFFIX): $(SE_SUB_CONCOLIC_OBJ)
 $(OBJDIR)SE$(PINTOOL_SUFFIX): $(SE_SUB_SE_OBJ) $(OBJDIR)Trace$(LIB_SUFFIX) $(OBJDIR)Concolic$(LIB_SUFFIX)
 	$(LINKER) $(TOOL_LDFLAGS_NOOPT) $(LINK_EXE)$@ $(^:%.h=) $(TOOL_LPATHS) $(TOOL_LIBS)
 
-se: $(OBJDIR)SE$(PINTOOL_SUFFIX)
+$(OBJDIR)SE.Base$(PINTOOL_SUFFIX): $(SE_SUB_SE_BASE_OBJ) $(OBJDIR)Trace$(LIB_SUFFIX) $(OBJDIR)Concolic$(LIB_SUFFIX)
+	$(LINKER) $(TOOL_LDFLAGS_NOOPT) $(LINK_EXE)$@ $(^:%.h=) $(TOOL_LPATHS) $(TOOL_LIBS)
 
-.PHONY: se
+$(OBJDIR)SE.GIL$(PINTOOL_SUFFIX): $(SE_SUB_SE_GIL_OBJ) $(OBJDIR)Trace$(LIB_SUFFIX) $(OBJDIR)Concolic$(LIB_SUFFIX)
+	$(LINKER) $(TOOL_LDFLAGS_NOOPT) $(LINK_EXE)$@ $(^:%.h=) $(TOOL_LPATHS) $(TOOL_LIBS)
+
+se.base: $(OBJDIR)SE.Base$(PINTOOL_SUFFIX)
+
+se.base.gil: $(OBJDIR)SE.GIL$(PINTOOL_SUFFIX)
+
+se.base.gil.gar: $(OBJDIR)SE$(PINTOOL_SUFFIX)
+
+.PHONY: se.base se.base.gil se.base.gil.gar
 
