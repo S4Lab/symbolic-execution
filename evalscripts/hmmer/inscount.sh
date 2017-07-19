@@ -8,6 +8,6 @@ progname="hmmsearch-measure"
 # the ~/hmmer-3.1b2/src/hmmsearch binary file which is compiled from
 # the v3.1b2 configured to use serial execution.
 # static (in binary) addresses are 404d68/404d6d
-# -taint argument points to the sq argument of p7_Pipeline function (which is set by ins at 415564 static address) until sizeof(ESL_SQ) bytes forward
-args="-pin_memory_range 0x4000000000:0x6000000000 -t ./obj-intel64/SE.so -trace tmp/se/trace.dat -memory tmp/se/memory.dat -measure -endpoints 0x404d68,0x404d6d -taint 0x6f1e00,0x6f1ed8 -verbose $verbose -logfilename out-eval-$progname -- $progexec"
+# -symbols argument points to the sq argument of p7_Pipeline function (which is set by ins at 415564 static address) until sizeof(ESL_SQ) bytes forward
+args="-pin_memory_range 0x4000000000:0x6000000000 -t ./obj-intel64/SE.so -trace tmp/se/trace.dat -memory tmp/se/memory.dat -measure -endpoints 0x404d68,0x404d6d -symbols 0x6f1e00,0x6f1ed8 -verbose $verbose -logfilename out-eval-$progname -- $progexec"
 sudo su sandbox -c "../../../pin.sh $args $@"

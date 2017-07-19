@@ -9,6 +9,6 @@ progname="astar-8puzzle"
 # library.
 # static (in library) addresses are 21f43/21f45
 # grep Instrumenting out-eval-astar-8puzzle.log | grep -A6 'mov rax' | grep -A5 -B1 'mov rsi' | grep -A4 -B2 'mov edi' | grep -A3 -B3 'mov rdx' | grep -A2 -B4 'mov rax' | grep -A1 -B5 'call rax' | less -R
-# -taint argument points to the "123065478" puzzle argument
-args="-pin_memory_range 0x4000000000:0x6000000000 -t ./obj-intel64/SE.so -trace tmp/se/trace.dat -memory tmp/se/memory.dat -endpoints 0x7ffff5ae5f43,0x7ffff5ae5f45 -taint 0x7fffffffe588,0x7fffffffe591 -printstack -lookup 313233303635343738 -verbose $verbose -logfilename out-eval-$progname -- $progexec"
+# -symbols argument points to the "123065478" puzzle argument
+args="-pin_memory_range 0x4000000000:0x6000000000 -t ./obj-intel64/SE.so -trace tmp/se/trace.dat -memory tmp/se/memory.dat -endpoints 0x7ffff5ae6f43,0x7ffff5ae6f45 -symbols 0x7fffffffe586,0x7fffffffe58f -printstack -lookup 313233303635343738 -verbose $verbose -logfilename out-eval-$progname -- $progexec"
 sudo su sandbox -c "../../../pin.sh $args $@"
