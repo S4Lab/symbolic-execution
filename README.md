@@ -1,7 +1,7 @@
 # SymbolicExecution
 
-This repo contains an implementation of the forward symbolic execution based on the LBMBL API.
-Less Boilerplate, More Business Logic (LBMBL) is a Pin-based architecture which provides more flexible and abstract API for heavy weight dynamic binary instrumentation use cases. A sample use case is the forward symbolic execution which requires instrumenting all assembly instructions to track the specific logics of each instruction symbolically.
+This repository contains an implementation of the forward symbolic execution based on the LDMBL API.
+Less Duplication, More Business Logic (LDMBL) is a Pin-based architecture which provides flexible and abstract API for heavy weight dynamic binary instrumentation use cases. A sample use case is the forward symbolic execution which requires instrumenting all assembly instructions to track the specific logics of each instruction symbolically.
 This repo is a subproject of the Twinner automatic deobfuscation framework.
 
 ## Installation
@@ -15,7 +15,7 @@ Run the SE pintool as follows for the usage details:
     pin -t ./obj-intel64/SE.so -h -- echo test
 
 ## License
-    Copyright © 2013-2017 Behnam Momeni
+    Copyright © 2013-2018 Behnam Momeni
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
